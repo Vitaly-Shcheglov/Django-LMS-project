@@ -7,6 +7,8 @@ class CustomUser(AbstractUser):
     city = models.CharField(max_length=100)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
+    username = None
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'phone', 'city']
 
