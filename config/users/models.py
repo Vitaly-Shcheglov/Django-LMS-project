@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 from courses.models import Course, Lesson
 
+
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
@@ -25,6 +26,7 @@ class CustomUser(AbstractUser):
         related_name='customuser_permissions',
         blank=True,
     )
+
 
 class Payment(models.Model):
     PAYMENT_METHODS = [
