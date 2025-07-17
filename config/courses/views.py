@@ -5,7 +5,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from .models import Course, Lesson
 from .serializers import CourseSerializer, LessonSerializer
-from .permissions import IsModerator
+from .permissions import IsModerator, IsOwner
+from rest_framework.permissions import IsAuthenticated
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -14,10 +15,13 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create', 'destroy']:
-            self.permission_classes = []
+            self.permission_classes = [IsAuthenticated]
         elif self.action in ['list', 'retrieve', 'update']:
             self.permission_classes = [IsModerator | permissions.IsAuthenticated]
         return super().get_permissions()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class LessonListCreate(generics.ListCreateAPIView):
@@ -40,8 +44,10 @@ class LessonViewSet(viewsets.ModelViewSet):
     serializer_class = LessonSerializer
 
     def get_permissions(self):
-        if self.action in ['create', 'destroy']:
-            self.permission_classes = []
+        if self.action in ['create']:
+            self.permission_classes = [IsAuthenticated]
+        elif self.action in ['destroy']:
+            self.permission_classes = [IsAuthenticated, IsOwner]
         elif self.action in ['list', 'retrieve', 'update']:
-            self.permission_classes = [IsModerator | permissions.IsAuthenticated]
+            self.permission_classes = [IsAuthenticated, IsModerator | IsOwner]
         return super().get_permissions()
