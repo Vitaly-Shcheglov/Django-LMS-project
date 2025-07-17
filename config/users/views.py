@@ -1,8 +1,11 @@
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny,  IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import CustomUser
-from .serializers import UserProfileSerializer, PaymentSerializer, UserSerializer
+from .serializers import UserProfileSerializer, PaymentSerializer, UserSerializer, CustomUserSerializer, CustomRegisterSerializer
 from django.http import HttpResponse
 
 
@@ -48,7 +51,8 @@ class PaymentListView(generics.ListAPIView):
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = CustomUserSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_permissions(self):
         if self.action in ['create']:
@@ -56,3 +60,18 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             self.permission_classes = [IsAuthenticated]
             return super().get_permissions()
+
+
+class RegisterView(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomRegisterSerializer
+    permission_classes = []
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    permission_classes = []

@@ -14,7 +14,7 @@ class CustomUser(AbstractUser):
     username = None
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'phone', 'city']
+    REQUIRED_FIELDS = ['phone', 'city']
 
     groups = models.ManyToManyField(
         Group,

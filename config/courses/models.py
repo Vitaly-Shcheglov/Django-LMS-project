@@ -9,7 +9,7 @@ class Course(models.Model):
     title = models.CharField(max_length=255)
     preview = models.ImageField(upload_to='course_previews/')
     description = models.TextField()
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
