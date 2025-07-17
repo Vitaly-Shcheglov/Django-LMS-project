@@ -1,0 +1,17 @@
+[
+    {
+        "model": "users.customuser",
+        "pk": 1,
+        "fields": {
+            "username": "testuser",
+            "email": "test@example.com",
+            "phone": "1234567890",
+            "city": "Test City",
+            "avatar": null,
+            "password": "hashed_password",
+            "is_superuser": false,
+            "is_staff": true,
+            "is_active": true
+        }
+    }
+]
