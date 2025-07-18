@@ -10,30 +10,73 @@ from django.http import HttpResponse
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
+    """
+    View для получения и обновления профиля пользователя.
+
+    Доступен только для авторизованных пользователей.
+    Позволяет пользователю просматривать и изменять свои данные.
+    """
     queryset = CustomUser.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
+        """
+        Получает текущего пользователя.
+
+        Returns:
+            CustomUser: Объект текущего пользователя.
+        """
         return self.request.user
 
 
 class UserListView(generics.ListAPIView):
+    """
+    View для получения списка всех пользователей.
+
+    Доступен только для авторизованных пользователей.
+    """
     queryset = CustomUser.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
 
 def home(request):
+    """
+    Главная страница.
+
+    Возвращает приветственное сообщение.
+
+    Args:
+        request (HttpRequest): Объект запроса.
+
+    Returns:
+        HttpResponse: Приветственное сообщение.
+    """
     return HttpResponse("Welcome to the LMS!")
 
 
 class PaymentListView(generics.ListAPIView):
+    """
+    View для получения списка всех платежей.
+
+    Доступен только для авторизованных пользователей.
+    Позволяет фильтровать платежи по курсу, уроку и методу оплаты.
+    """
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        """
+        Возвращает отфильтрованный список платежей на основе параметров запроса.
+
+        Args:
+            None
+
+        Returns:
+            QuerySet: Отфильтрованный список платежей.
+        """
         queryset = super().get_queryset()
         course_id = self.request.query_params.get('course_id', None)
         lesson_id = self.request.query_params.get('lesson_id', None)
@@ -50,11 +93,24 @@ class PaymentListView(generics.ListAPIView):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet для управления пользователями.
+
+    Позволяет создавать, просматривать, обновлять и удалять пользователей.
+    Доступ к созданию пользователей разрешен для неаутентифицированных пользователей,
+    остальные действия доступны только для авторизованных пользователей.
+    """
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
 
     def get_permissions(self):
+        """
+        Определяет права доступа на основе действия.
+
+        Returns:
+            list: Список разрешений, которые будут применены к текущему действию.
+        """
         if self.action in ['create']:
             self.permission_classes = [AllowAny]
         else:
@@ -63,15 +119,36 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class RegisterView(viewsets.ModelViewSet):
+    """
+    ViewSet для регистрации новых пользователей.
+
+    Позволяет пользователям регистрироваться в системе.
+    Доступен для всех пользователей (включая неаутентифицированных).
+    """
     queryset = CustomUser.objects.all()
     serializer_class = CustomRegisterSerializer
     permission_classes = []
 
     def create(self, request, *args, **kwargs):
+        """
+        Создает нового пользователя.
+
+        Args:
+            request (Request): Объект запроса с данными для создания пользователя.
+
+        Returns:
+            Response: Ответ с данными созданного пользователя и статусом 201.
+        """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class CustomTokenObtainPairView(TokenObtainPairView):
+    """
+    View для получения JWT токена.
+
+    Позволяет пользователям получать токен для аутентификации.
+    Доступен для всех пользователей (включая неаутентифицированных).
+    """
     permission_classes = []
