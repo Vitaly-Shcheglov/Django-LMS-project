@@ -26,6 +26,12 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ['id', 'title', 'description', 'preview', 'video_url']
+        extra_kwargs = {
+            'video_url': {
+                'validators': [validate_video_url]
+            }
+        }
+
 
     def get_lesson_count(self, obj):
         """
