@@ -57,3 +57,18 @@ class Lesson(models.Model):
             str: Заголовок урока.
         """
         return self.title
+
+
+class Subscription(models.Model):
+    """
+    Модель подписки на обновления курса.
+
+    Атрибуты:
+        user (ForeignKey): Пользователь, подписавшийся на курс.
+        course (ForeignKey): Курс, на обновления которого подписан пользователь.
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'course')

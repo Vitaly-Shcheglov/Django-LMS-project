@@ -1,10 +1,15 @@
 from django.shortcuts import render
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+
 from rest_framework import viewsets
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
-from .models import Course, Lesson
-from .serializers import CourseSerializer, LessonSerializer
+from .models import Course, Lesson, Subscription
+from .serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 from .permissions import IsModerator, IsOwner
 from rest_framework.permissions import IsAuthenticated
 
@@ -92,3 +97,36 @@ class LessonViewSet(viewsets.ModelViewSet):
         elif self.action in ['list', 'retrieve', 'update']:
             self.permission_classes = [IsAuthenticated, IsModerator | IsOwner]
         return super().get_permissions()
+
+
+class SubscriptionView(APIView):
+    """
+    View для управления подписками пользователей на курсы.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        """
+        Обрабатывает создание или удаление подписки на курс.
+
+        Args:
+            request (Request): Объект запроса с данными о подписке.
+
+        Returns:
+            Response: Ответ с сообщением о статусе подписки.
+        """
+        user = request.user
+        course_id = request.data.get('course_id')
+        course_item = get_object_or_404(Course, id=course_id)
+
+        subs_item = Subscription.objects.filter(user=user, course=course_item)
+
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'Подписка удалена'
+        else:
+            Subscription.objects.create(user=user, course=course_item)
+            message = 'Подписка добавлена'
+
+        return Response({"message": message}, status=status.HTTP_200_OK)
