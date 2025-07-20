@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Course, Lesson, Subscription
+from .validators import ExternalLinkValidator
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -40,14 +41,32 @@ class LessonSerializer(serializers.ModelSerializer):
 
     Этот сериализатор преобразует объекты Lesson в JSON и обратно.
     """
+    title = serializers.CharField(max_length=255)
+    video_url = serializers.URLField()
+
     class Meta:
         model = Lesson
         fields = ['id', 'title', 'description', 'preview', 'video_url']
-        extra_kwargs = {
-            'video_url': {
-                'validators': [validate_video_url]
-            }
-        }
+        validators = [ExternalLinkValidator(field='video_url')]
+
+    def validate(self, attrs):
+        """
+        Выполняет валидацию атрибутов переданных данных.
+
+        Этот метод вызывает валидатор, определенный в Meta класса,
+        и проверяет корректность предоставленных атрибутов.
+
+        Args:
+            attrs (dict): Словарь атрибутов, которые необходимо валидировать.
+
+        Returns:
+            dict: Атрибуты, если они валидны.
+
+        Raises:
+            ValidationError: Если валидатор находит ошибку в атрибутах.
+        """
+        self.Meta.validators[0](attrs)
+        return attrs
 
 
     def get_lesson_count(self, obj):
