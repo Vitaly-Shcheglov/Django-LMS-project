@@ -10,7 +10,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from .models import Course, Lesson, Subscription
 from .serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
-from .permissions import IsModerator, IsOwner
+from .permissions import IsOwner
+from users.permissions import IsModerator
 from rest_framework.permissions import IsAuthenticated
 from .paginators import CustomPageNumberPagination
 
@@ -62,7 +63,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     @swagger_auto_schema(
         operation_summary="Создать новый курс",
         request_body=CourseSerializer,
-        responses={201: CourseSerializer
+        responses={201: CourseSerializer,
                    400: "Неверный запрос",
         },
         tags=["Courses"]

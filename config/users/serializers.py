@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import CustomUser, Payment
-from django.contrib.auth import User, get_user_model
+from django.contrib.auth import get_user_model
 
 
 User = get_user_model()
