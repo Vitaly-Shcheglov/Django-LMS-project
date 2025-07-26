@@ -54,7 +54,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'phone', 'city', 'avatar', 'payments']
+        fields = ['id', 'username', 'email', 'phone', 'city', 'avatar', 'payment_set']
 
     def get_payments(self, obj):
         """

@@ -18,6 +18,7 @@ class Course(models.Model):
     title = models.CharField(max_length=255)
     preview = models.ImageField(upload_to='course_previews/')
     description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     owner = models.ForeignKey(User, related_name='courses', on_delete=models.CASCADE)
 
     def __str__(self):
