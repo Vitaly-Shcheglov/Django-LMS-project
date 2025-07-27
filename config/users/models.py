@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
-from courses.models import Course, Lesson
 
 
 class CustomUser(AbstractUser):
@@ -54,6 +53,7 @@ class Payment(models.Model):
     PAYMENT_METHODS = [
         ('cash', 'Наличные'),
         ('transfer', 'Перевод на счет'),
+        ('stripe', 'Stripe'),
     ]
 
     user = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE)

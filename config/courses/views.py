@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
@@ -9,7 +10,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from .models import Course, Lesson, Subscription
 from .serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
-from .permissions import IsModerator, IsOwner
+from .permissions import IsOwner
+from users.permissions import IsModerator
 from rest_framework.permissions import IsAuthenticated
 from .paginators import CustomPageNumberPagination
 
@@ -46,6 +48,31 @@ class CourseViewSet(viewsets.ModelViewSet):
             serializer (CourseSerializer): Сериализатор для создания курса.
         """
         serializer.save(owner=self.request.user)
+
+    @swagger_auto_schema(
+        operation_summary="Получить список курсов",
+        responses={200: CourseSerializer(many=True)},
+        tags=["Courses"]
+    )
+    def list(self, request, *args, **kwargs):
+        """
+        Возвращает список всех курсов.
+        """
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary="Создать новый курс",
+        request_body=CourseSerializer,
+        responses={201: CourseSerializer,
+                   400: "Неверный запрос",
+        },
+        tags=["Courses"]
+    )
+    def create(self, request, *args, **kwargs):
+        """
+        Создает новый курс.
+        """
+        return super().create(request, *args, **kwargs)
 
 
 class LessonListCreate(generics.ListCreateAPIView):

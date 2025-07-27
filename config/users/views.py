@@ -2,10 +2,15 @@ from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny,  IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from .models import Payment
+from courses.models import Course
+from courses.services import create_product, create_price, create_checkout_session
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import CustomUser
-from .serializers import UserProfileSerializer, PaymentSerializer, UserSerializer, CustomUserSerializer, CustomRegisterSerializer
+from .serializers import UserProfileSerializer, PaymentSerializer, CustomUserSerializer, CustomRegisterSerializer
 from django.http import HttpResponse
 
 
@@ -90,6 +95,44 @@ class PaymentListView(generics.ListAPIView):
             queryset = queryset.filter(payment_method=payment_method)
 
         return queryset
+
+
+class PaymentCreateView(APIView):
+    """
+    View для создания платежа.
+
+    Позволяет пользователю создать платеж за курс, создавая продукт и цену в Stripe,
+    а также сессию для получения ссылки на оплату.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        """
+        Обрабатывает создание платежа.
+
+        Args:
+            request (Request): Объект запроса с данными о платеже.
+
+        Returns:
+            Response: Ответ с информацией о платежной сессии.
+        """
+        course_id = request.data.get('course_id')
+        course = get_object_or_404(Course, id=course_id)
+
+        product = create_product(course.title, course.description)
+        price = create_price(product.id, int(course.price * 100))
+
+        session = create_checkout_session(price.id)
+
+        Payment.objects.create(
+            user=request.user,
+            paid_course=course,
+            amount=course.price,
+            payment_method='stripe',
+        )
+
+        return Response({"url": session.url}, status=status.HTTP_201_CREATED)
 
 
 class UserViewSet(viewsets.ModelViewSet):

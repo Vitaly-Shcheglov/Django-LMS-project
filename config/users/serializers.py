@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import CustomUser, Payment
-from django.contrib.auth import User, get_user_model
+from django.contrib.auth import get_user_model
 
 
 User = get_user_model()
@@ -54,7 +54,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'phone', 'city', 'avatar', 'payments']
+        fields = ['id', 'username', 'email', 'phone', 'city', 'avatar', 'payment_set']
 
     def get_payments(self, obj):
         """
