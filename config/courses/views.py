@@ -38,7 +38,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'destroy']:
             self.permission_classes = [IsAuthenticated]
         elif self.action in ['list', 'retrieve', 'update']:
-            self.permission_classes = [IsModerator | permissions.IsAuthenticated]
+            self.permission_classes = [IsModerator | IsAuthenticated]
         return super().get_permissions()
 
     def perform_create(self, serializer):

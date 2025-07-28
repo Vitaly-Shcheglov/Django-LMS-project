@@ -185,4 +185,8 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'courses.tasks.notify_users_about_upcoming_courses',
         'schedule': crontab(minute=0, hour='*'),
     },
+    'deactivate-inactive-users-every-day': {
+        'task': 'users.tasks.deactivate_inactive_users',
+        'schedule': crontab(hour=0, minute=0),
+    },
 }
