@@ -14,6 +14,7 @@ from .permissions import IsOwner
 from users.permissions import IsModerator
 from rest_framework.permissions import IsAuthenticated
 from .paginators import CustomPageNumberPagination
+from .tasks import send_course_update_email
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -37,7 +38,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'destroy']:
             self.permission_classes = [IsAuthenticated]
         elif self.action in ['list', 'retrieve', 'update']:
-            self.permission_classes = [IsModerator | permissions.IsAuthenticated]
+            self.permission_classes = [IsModerator | IsAuthenticated]
         return super().get_permissions()
 
     def perform_create(self, serializer):
@@ -158,3 +159,35 @@ class SubscriptionView(APIView):
             message = 'Подписка добавлена'
 
         return Response({"message": message}, status=status.HTTP_200_OK)
+
+
+class CourseUpdateView(APIView):
+    """
+    View для обновления курса.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        """
+        Обрабатывает обновление курса.
+
+        Args:
+            request (Request): Объект запроса с данными о курсе.
+            kwargs: Дополнительные аргументы.
+
+        Returns:
+            Response: Ответ с информацией о статусе обновления.
+        """
+        course_id = kwargs.get('pk')
+        course = get_object_or_404(Course, id=course_id)
+        serializer = CourseSerializer(course, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            subscriptions = Subscription.objects.filter(course=course)
+            for subscription in subscriptions:
+                send_course_update_email.delay(course.title, subscription.user.email)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
