@@ -17,17 +17,14 @@ services:
       - celery-beat
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings
-      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
-      - REDIS_URL=redis://redis:6379/0
 
   db:
     image: postgres:latest
     restart: always
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${NAME}
+      POSTGRES_USER: ${USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -49,7 +46,6 @@ services:
       - redis
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings
-      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
 
   celery-beat:
     build: .
