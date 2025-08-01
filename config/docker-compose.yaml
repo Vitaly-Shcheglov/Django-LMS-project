@@ -13,18 +13,15 @@ services:
     depends_on:
       - db
       - redis
-      - celery
-      - celery-beat
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings
+    env_file: .env
 
   db:
     image: postgres:latest
     restart: always
     environment:
-      POSTGRES_DB: ${NAME}
-      POSTGRES_USER: ${USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -37,26 +34,28 @@ services:
       - "6379:6379"
 
   celery:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: celery -A config worker --loglevel=info
     volumes:
       - .:/app
     depends_on:
       - db
       - redis
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings
+    env_file: .env
 
   celery-beat:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: celery -A config beat --loglevel=info
     volumes:
       - .:/app
     depends_on:
       - db
       - redis
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings
+    env_file: .env
 
 volumes:
   postgres_data:
