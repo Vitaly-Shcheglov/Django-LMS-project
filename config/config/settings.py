@@ -91,11 +91,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
        'default': {
            'ENGINE': 'django.db.backends.postgresql',
-           'NAME': os.getenv("DB_NAME", "lms_db"),
-           'USER': os.getenv("DB_USER", "postgres"),
-           'PASSWORD': os.getenv("DB_PASSWORD", "cgfhnfr2009"),
-           'HOST': os.getenv("DB_HOST", "localhost"),
-           'PORT': os.getenv("DB_PORT", "5432"),
+           'POSTGRES_DB': os.getenv("POSTGRES_DB", "lms_db"),
+           'POSTGRES_USER': os.getenv("POSTGRES_USER", "postgres"),
+           'POSTGRES_PASSWORD': os.getenv("POSTGRES_PASSWORD", "cgfhnfr2009"),
+           'POSTGRES_HOST': os.getenv("POSTGRES_HOST", "db"),
+           'POSTGRES_PORT': os.getenv("POSTGRES_PORT", "5432"),
        }
    }
 
@@ -190,3 +190,5 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(hour=0, minute=0),
     },
 }
+
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
