@@ -14,8 +14,7 @@ services:
       - ./.env
 
   nginx:
-    build:
-      context: ./nginx
+    build: ./nginx
     ports:
       - "80:80"
     voLumes:
