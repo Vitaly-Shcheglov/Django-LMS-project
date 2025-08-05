@@ -89,16 +89,25 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-       'default': {
-           'ENGINE': 'django.db.backends.postgresql',
-           'POSTGRES_DB': os.getenv("POSTGRES_DB", "lms_db"),
-           'POSTGRES_USER': os.getenv("POSTGRES_USER", "postgres"),
-           'POSTGRES_PASSWORD': os.getenv("POSTGRES_PASSWORD", "cgfhnfr2009"),
-           'POSTGRES_HOST': os.getenv("POSTGRES_HOST", "db"),
-           'POSTGRES_PORT': os.getenv("POSTGRES_PORT", "5432"),
+
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'test_db_sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+           'default': {
+               'ENGINE': 'django.db.backends.postgresql',
+               'POSTGRES_DB': os.getenv("POSTGRES_DB", "lms_db"),
+               'POSTGRES_USER': os.getenv("POSTGRES_USER", "postgres"),
+               'POSTGRES_PASSWORD': os.getenv("POSTGRES_PASSWORD", "cgfhnfr2009"),
+               'POSTGRES_HOST': os.getenv("POSTGRES_HOST", "db"),
+               'POSTGRES_PORT': os.getenv("POSTGRES_PORT", "5432"),
+           }
        }
-   }
 
 
 # Password validation
@@ -201,10 +210,4 @@ CACHES = {
 
 STATIC_ROOT = 'app/staticfiles/'
 
-if 'test' in sys.argv:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.basckends.sqlite3',
-            'NAME': BASE_DIR / 'test_db_sqlite3',
-        }
-    }
+
