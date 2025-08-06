@@ -1,7 +1,6 @@
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import Group, Permission
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth import get_user_model
 
 
 class CustomUser(AbstractUser):
@@ -16,24 +15,25 @@ class CustomUser(AbstractUser):
 
     Поля username и REQUIRED_FIELDS настроены для использования email в качестве имени пользователя.
     """
+
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
     city = models.CharField(max_length=100)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
 
     username = None
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['phone', 'city']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["phone", "city"]
 
     groups = models.ManyToManyField(
         Group,
-        related_name='customuser_groups',
+        related_name="customuser_groups",
         blank=True,
     )
     user_permissions = models.ManyToManyField(
         Permission,
-        related_name='customuser_permissions',
+        related_name="customuser_permissions",
         blank=True,
     )
 
@@ -50,16 +50,17 @@ class Payment(models.Model):
     - amount: сумма платежа.
     - payment_method: метод оплаты (наличные или перевод на счет).
     """
+
     PAYMENT_METHODS = [
-        ('cash', 'Наличные'),
-        ('transfer', 'Перевод на счет'),
-        ('stripe', 'Stripe'),
+        ("cash", "Наличные"),
+        ("transfer", "Перевод на счет"),
+        ("stripe", "Stripe"),
     ]
 
-    user = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE)
+    user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE)
     payment_date = models.DateTimeField(auto_now_add=True)
-    paid_course = models.ForeignKey('courses.Course', null=True, blank=True, on_delete=models.CASCADE)
-    paid_lesson = models.ForeignKey('courses.Lesson', null=True, blank=True, on_delete=models.CASCADE)
+    paid_course = models.ForeignKey("courses.Course", null=True, blank=True, on_delete=models.CASCADE)
+    paid_lesson = models.ForeignKey("courses.Lesson", null=True, blank=True, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS)
 

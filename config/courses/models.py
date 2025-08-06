@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class Course(models.Model):
     """
     Модель курса.
@@ -14,11 +15,12 @@ class Course(models.Model):
         description (TextField): Описание курса.
         owner (User): Владелец курса, связанный с моделью User.
     """
+
     title = models.CharField(max_length=255)
-    preview = models.ImageField(upload_to='course_previews/')
+    preview = models.ImageField(upload_to="course_previews/")
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    owner = models.ForeignKey(User, related_name='courses', on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name="courses", on_delete=models.CASCADE)
 
     def __str__(self):
         """
@@ -42,12 +44,13 @@ class Lesson(models.Model):
         course (Course): Курс, к которому принадлежит урок.
         owner (User): Владелец урока, связанный с моделью User.
     """
+
     title = models.CharField(max_length=255)
     description = models.TextField()
-    preview = models.ImageField(upload_to='lesson_previews/')
+    preview = models.ImageField(upload_to="lesson_previews/")
     video_url = models.URLField()
-    course = models.ForeignKey(Course, related_name='lessons', on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, related_name='lessons', on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, related_name="lessons", on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name="lessons", on_delete=models.CASCADE)
 
     def __str__(self):
         """
@@ -67,8 +70,9 @@ class Subscription(models.Model):
         user (ForeignKey): Пользователь, подписавшийся на курс.
         course (ForeignKey): Курс, на обновления которого подписан пользователь.
     """
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('user', 'course')
+        unique_together = ("user", "course")

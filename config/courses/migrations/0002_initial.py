@@ -9,19 +9,21 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('courses', '0001_initial'),
-        ('users', '0001_initial'),
+        ("courses", "0001_initial"),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='course',
-            name='author',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.customuser'),
+            model_name="course",
+            name="author",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="users.customuser"),
         ),
         migrations.AddField(
-            model_name='lesson',
-            name='course',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='lessons', to='courses.course'),
+            model_name="lesson",
+            name="course",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, related_name="lessons", to="courses.course"
+            ),
         ),
     ]
