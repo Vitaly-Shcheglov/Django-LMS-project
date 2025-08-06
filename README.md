@@ -299,7 +299,7 @@ redis-server
 
 - URL: http://127.0.0.1:8000/api/lessons/{id}/
 - Метод: DELETE
-- Заголовки (Headers): Authorization: Bearer ваш_токен_здесь
+- Заголовки (Headers): Authorization: Bearer ваш_токен_здесь.
 - Описание: Замените {id} на ID урока, который вы хотите удалить.
 
 #### Получение списка уроков с фильтрацией:
