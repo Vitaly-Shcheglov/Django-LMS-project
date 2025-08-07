@@ -59,7 +59,7 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-    - uses: webfactory/ssh-agent@v8.9.0
+    - uses: webfactory/ssh-agent@v0.9.0
       with:
         ssh-private-key: ${{ secrets.SSH_KEY }}
 
