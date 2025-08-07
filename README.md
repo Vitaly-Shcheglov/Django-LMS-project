@@ -177,7 +177,7 @@
    python manage.py createsuperuser
 
 5. Запустите сервер:
-   python manage.py runserver
+   python manage.py runserver.
 
 6. Установите и настройте Redis:
 - **Для Windows**: Используйте WSL или [Redis для Windows](https://github.com/microsoftarchive/redis/releases).
