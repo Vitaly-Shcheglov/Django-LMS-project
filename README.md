@@ -167,7 +167,7 @@
    pip install -r requirements.txt
 
 
-3. Создайте базу данных в PostgreSQL и настройте подключение в `settings.py`.
+3. Создайте базу данных в PostgreSQL и настройте подключение в `settings.py`
 
 4. Создайте новые миграции и примените их:
    python manage.py makemigrations
