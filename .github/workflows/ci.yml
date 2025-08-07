@@ -56,9 +56,9 @@ jobs:
         fi
 
   deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
+  needs: build-and-push
+  runs-on: ubuntu-latest
+  steps:
     - uses: webfactory/ssh-agent@v0.9.0
       with:
         ssh-private-key: ${{ secrets.SSH_KEY }}
@@ -66,9 +66,9 @@ jobs:
     - name: Deploy
       run: |
         SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-        docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:$SHORT_SHA
-        docker stop myapp || true
-        docker rm myapp || true
-        docker run -d --name myapp -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:$SHORT_SHA
-        EOF
+        ssh -o StrictHostKeyChecking=no \
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} \
+            "docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:$SHORT_SHA && \
+             docker stop myapp || true && \
+             docker rm myapp || true && \
+             docker run -d --name myapp -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:$SHORT_SH
