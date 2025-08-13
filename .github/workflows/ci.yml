@@ -78,12 +78,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Verify SSH connection
-        run: |
-          echo "Testing SSH connection to ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}"
-          ssh -vvv -o StrictHostKeyChecking=no \
-              ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} \
-              "echo 'SSH connection successful'"
+
 
       - name: Deploy to server
         run: |
