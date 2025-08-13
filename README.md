@@ -219,7 +219,7 @@ brew install redis
 redis-server
 
 7. Настройка API ключей Stripe
-Зарегистрируйтесь на [Stripe Dashboard](https://dashboard.stripe.com/register) и получите тестовые API ключи. Сохраните ключи в `settings.py` проекта.
+Зарегистрируйтесь на [Stripe Dashboard](https://dashboard.stripe.com/register) и получите тестовые API ключи. Сохраните ключи в `settings.py` проекта
 
 8. Настройка переменных окружения
 Создайте файл `.env` на сервере и добавьте все необходимые переменные окружения. Пример шаблона `.env`:
