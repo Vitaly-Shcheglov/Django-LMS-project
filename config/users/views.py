@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny,  IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
@@ -21,6 +21,7 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     Доступен только для авторизованных пользователей.
     Позволяет пользователю просматривать и изменять свои данные.
     """
+
     queryset = CustomUser.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
@@ -41,6 +42,7 @@ class UserListView(generics.ListAPIView):
 
     Доступен только для авторизованных пользователей.
     """
+
     queryset = CustomUser.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
@@ -68,6 +70,7 @@ class PaymentListView(generics.ListAPIView):
     Доступен только для авторизованных пользователей.
     Позволяет фильтровать платежи по курсу, уроку и методу оплаты.
     """
+
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated]
@@ -83,9 +86,9 @@ class PaymentListView(generics.ListAPIView):
             QuerySet: Отфильтрованный список платежей.
         """
         queryset = super().get_queryset()
-        course_id = self.request.query_params.get('course_id', None)
-        lesson_id = self.request.query_params.get('lesson_id', None)
-        payment_method = self.request.query_params.get('payment_method', None)
+        course_id = self.request.query_params.get("course_id", None)
+        lesson_id = self.request.query_params.get("lesson_id", None)
+        payment_method = self.request.query_params.get("payment_method", None)
 
         if course_id:
             queryset = queryset.filter(paid_course_id=course_id)
@@ -117,7 +120,7 @@ class PaymentCreateView(APIView):
         Returns:
             Response: Ответ с информацией о платежной сессии.
         """
-        course_id = request.data.get('course_id')
+        course_id = request.data.get("course_id")
         course = get_object_or_404(Course, id=course_id)
 
         product = create_product(course.title, course.description)
@@ -129,7 +132,7 @@ class PaymentCreateView(APIView):
             user=request.user,
             paid_course=course,
             amount=course.price,
-            payment_method='stripe',
+            payment_method="stripe",
         )
 
         return Response({"url": session.url}, status=status.HTTP_201_CREATED)
@@ -143,6 +146,7 @@ class UserViewSet(viewsets.ModelViewSet):
     Доступ к созданию пользователей разрешен для неаутентифицированных пользователей,
     остальные действия доступны только для авторизованных пользователей.
     """
+
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
@@ -154,7 +158,7 @@ class UserViewSet(viewsets.ModelViewSet):
         Returns:
             list: Список разрешений, которые будут применены к текущему действию.
         """
-        if self.action in ['create']:
+        if self.action in ["create"]:
             self.permission_classes = [AllowAny]
         else:
             self.permission_classes = [IsAuthenticated]
@@ -168,6 +172,7 @@ class RegisterView(viewsets.ModelViewSet):
     Позволяет пользователям регистрироваться в системе.
     Доступен для всех пользователей (включая неаутентифицированных).
     """
+
     queryset = CustomUser.objects.all()
     serializer_class = CustomRegisterSerializer
     permission_classes = []
@@ -187,6 +192,7 @@ class RegisterView(viewsets.ModelViewSet):
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     """
     View для получения JWT токена.
@@ -194,4 +200,5 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     Позволяет пользователям получать токен для аутентификации.
     Доступен для всех пользователей (включая неаутентифицированных).
     """
+
     permission_classes = []

@@ -1,4 +1,3 @@
-from rest_framework import serializers
 from django.core.exceptions import ValidationError
 from urllib.parse import urlparse
 
@@ -30,5 +29,5 @@ class ExternalLinkValidator:
         url = attrs.get(self.field)
         if url is not None:
             parsed_url = urlparse(url)
-            if parsed_url.netloc != 'www.youtube.com' and parsed_url.netloc != 'youtube.com':
-                raise ValidationError(f'Ссылка в поле {self.field} должна вести только на youtube.com')
+            if parsed_url.netloc != "www.youtube.com" and parsed_url.netloc != "youtube.com":
+                raise ValidationError(f"Ссылка в поле {self.field} должна вести только на youtube.com")

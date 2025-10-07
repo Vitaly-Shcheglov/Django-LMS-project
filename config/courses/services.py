@@ -1,9 +1,9 @@
 import stripe
 from django.conf import settings
-from users.models import Payment
 
 
 stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
+
 
 def create_product(name, description):
     """
@@ -22,7 +22,8 @@ def create_product(name, description):
     )
     return product
 
-def create_price(product_id, amount, currency='usd'):
+
+def create_price(product_id, amount, currency="usd"):
     """
     Создает цену для продукта в Stripe.
 
@@ -41,6 +42,7 @@ def create_price(product_id, amount, currency='usd'):
     )
     return price
 
+
 def create_checkout_session(price_id):
     """
     Создает сессию для оплаты в Stripe.
@@ -52,13 +54,15 @@ def create_checkout_session(price_id):
         dict: Ответ от Stripe с URL для оплаты.
     """
     session = stripe.checkout.Session.create(
-        payment_method_types=['card'],
-        line_items=[{
-            'price': price_id,
-            'quantity': 1,
-        }],
-        mode='payment',
-        success_url='http://localhost:8000/success/',
-        cancel_url='http://localhost:8000/cancel/',
+        payment_method_types=["card"],
+        line_items=[
+            {
+                "price": price_id,
+                "quantity": 1,
+            }
+        ],
+        mode="payment",
+        success_url="http://localhost:8000/success/",
+        cancel_url="http://localhost:8000/cancel/",
     )
     return session

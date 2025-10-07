@@ -22,4 +22,4 @@ class IsModerator(permissions.BasePermission):
             bool: True, если пользователь принадлежит группе 'Moderators',
             иначе False.
         """
-        return request.user.groups.filter(name='Moderators').exists()
+        return request.user.groups.filter(name="Moderators").exists()

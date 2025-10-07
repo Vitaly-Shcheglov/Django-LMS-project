@@ -9,13 +9,14 @@ class LessonSerializer(serializers.ModelSerializer):
 
     Этот сериализатор преобразует объекты Lesson в JSON и обратно.
     """
+
     title = serializers.CharField(max_length=255)
     video_url = serializers.URLField()
 
     class Meta:
         model = Lesson
-        fields = ['id', 'title', 'description', 'preview', 'video_url']
-        validators = [ExternalLinkValidator(field='video_url')]
+        fields = ["id", "title", "description", "preview", "video_url"]
+        validators = [ExternalLinkValidator(field="video_url")]
 
     def validate(self, attrs):
         """
@@ -35,7 +36,6 @@ class LessonSerializer(serializers.ModelSerializer):
         """
         self.Meta.validators[0](attrs)
         return attrs
-
 
     def get_lesson_count(self, obj):
         """
@@ -57,14 +57,14 @@ class CourseSerializer(serializers.ModelSerializer):
     Этот сериализатор преобразует объекты Course в JSON и обратно.
     Включает поле для подсчета количества уроков и вложенный сериализатор для уроков.
     """
+
     lesson_count = serializers.SerializerMethodField()
     is_subscribed = serializers.SerializerMethodField()
     lessons = LessonSerializer(many=True, read_only=True)
 
-
     class Meta:
         model = Course
-        fields = ['id', 'title', 'preview', 'description', 'lesson_count', 'lessons', 'is_subscribed']
+        fields = ["id", "title", "preview", "description", "lesson_count", "lessons", "is_subscribed"]
 
     def get_is_subscribed(self, obj):
         """
@@ -76,7 +76,7 @@ class CourseSerializer(serializers.ModelSerializer):
         Returns:
             bool: True, если пользователь подписан на курс, иначе False.
         """
-        request = self.context.get('request')
+        request = self.context.get("request")
         if request and request.user.is_authenticated:
             return Subscription.objects.filter(user=request.user, course=obj).exists()
         return False
@@ -88,6 +88,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     Позволяет преобразовать объекты Subscription в JSON и обратно.
     """
+
     class Meta:
         model = Subscription
-        fields = ['user', 'course']
+        fields = ["user", "course"]
