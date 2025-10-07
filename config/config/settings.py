@@ -89,6 +89,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+<<<<<<< HEAD
 
 if "test" in sys.argv:
     DATABASES = {
@@ -108,6 +109,18 @@ else:
             "POSTGRES_PORT": os.getenv("POSTGRES_PORT", "5432"),
         }
     }
+=======
+DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.postgresql',
+           'POSTGRES_DB': os.getenv("POSTGRES_DB", "lms_db"),
+           'POSTGRES_USER': os.getenv("POSTGRES_USER", "postgres"),
+           'POSTGRES_PASSWORD': os.getenv("POSTGRES_PASSWORD", "cgfhnfr2009"),
+           'POSTGRES_HOST': os.getenv("POSTGRES_HOST", "db"),
+           'POSTGRES_PORT': os.getenv("POSTGRES_PORT", "5432"),
+       }
+   }
+>>>>>>> origin/develop
 
 
 # Password validation
@@ -197,6 +210,10 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
+<<<<<<< HEAD
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.redis.RedisCache", "LOCATION": "redis://redis:6379/1"}}
 
 STATIC_ROOT = "app/staticfiles/"
+=======
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+>>>>>>> origin/develop
