@@ -211,9 +211,13 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.redis.RedisCache", "LOCATION": "redis://redis:6379/1"}}
 
 STATIC_ROOT = "app/staticfiles/"
+=======
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+>>>>>>> origin/develop
 =======
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 >>>>>>> origin/develop
